@@ -88,6 +88,40 @@ Optional. Only relevant if a page contains a ` ```mermaid ` block.
 theme = "dark"
 ```
 
+## `[highlight]`
+
+Optional. Adds your project's own identifiers to the client-side code
+highlighter, merged *on top of* the built-in vocabulary — so you colour your own
+type and function names without editing `app.js`.
+
+Each sub-table `[highlight.<lang>]` matches a code-fence language (a ` ```cpp `
+block reads `[highlight.cpp]`). Within it, three list-valued keys map to the
+highlighter's categories:
+
+| Key | Highlighted as | Token colour |
+|---|---|---|
+| `type` | a type name | the `type` colour |
+| `keyword` | a keyword | the `keyword` colour |
+| `fn` | a function/builtin | the `fn` colour |
+
+```toml ref="site.toml · [highlight]"
+[highlight.cpp]
+type    = ["RenderTarget", "Painter", "Ring"]
+keyword = ["co_await", "co_yield", "co_return"]
+
+[highlight.glsl]
+fn = ["smoothstep", "reflect", "refract"]
+```
+
+It emits a tiny `window.stillHighlight` script before `app.js` only when the
+block is present, so pages stay lean when you don't use it.
+
+:::note Match the fence language
+The sub-table name must equal the fence's language tag. Extras under
+`[highlight.cpp]` only apply to ` ```cpp ` blocks — a ` ```text ` block is never
+highlighted.
+:::
+
 ## A complete example
 
 ```toml ref="site.toml"

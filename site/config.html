@@ -100,6 +100,30 @@ bg   = "#0b0b10"   # page background
 [mermaid]
 theme = "dark"
 </script></figure>
+<h2><code>[highlight]</code></h2>
+<p>Optional. Adds your project's own identifiers to the client-side code highlighter, merged <em>on top of</em> the built-in vocabulary — so you colour your own type and function names without editing <code>app.js</code>.</p>
+<p>Each sub-table <code>[highlight.&lt;lang&gt;]</code> matches a code-fence language (a <code> </code>`<code>cpp </code> block reads <code>[highlight.cpp]</code>). Within it, three list-valued keys map to the highlighter's categories:</p>
+<table>
+  <thead><tr><th>Key</th><th>Highlighted as</th><th>Token colour</th></tr></thead>
+  <tbody>
+    <tr><td><code>type</code></td><td>a type name</td><td>the <code>type</code> colour</td></tr>
+    <tr><td><code>keyword</code></td><td>a keyword</td><td>the <code>keyword</code> colour</td></tr>
+    <tr><td><code>fn</code></td><td>a function/builtin</td><td>the <code>fn</code> colour</td></tr>
+  </tbody>
+</table>
+<figure class="code" data-lang="toml" data-ref="site.toml · [highlight]"><script type="text/plain">
+[highlight.cpp]
+type    = ["RenderTarget", "Painter", "Ring"]
+keyword = ["co_await", "co_yield", "co_return"]
+
+[highlight.glsl]
+fn = ["smoothstep", "reflect", "refract"]
+</script></figure>
+<p>It emits a tiny <code>window.stillHighlight</code> script before <code>app.js</code> only when the block is present, so pages stay lean when you don't use it.</p>
+<div class="note">
+  <span class="label">Match the fence language</span>
+  <p>The sub-table name must equal the fence's language tag. Extras under <code>[highlight.cpp]</code> only apply to <code> </code>`<code>cpp </code> blocks — a <code> </code>`<code>text </code> block is never highlighted.</p>
+</div>
 <h2>A complete example</h2>
 <figure class="code" data-lang="toml" data-ref="site.toml"><script type="text/plain">
 [site]

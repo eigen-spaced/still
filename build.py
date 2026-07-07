@@ -50,6 +50,7 @@ reference, which is itself written in it):
 """
 
 import html
+import json
 import re
 import shutil
 import sys
@@ -115,6 +116,9 @@ class Config:
         self.theme = data.get("theme", {})
         # Mermaid init options (merged over sensible dark defaults below).
         self.mermaid = data.get("mermaid", {})
+        # Extra syntax-highlighter tokens per language, merged on top of the
+        # built-in vocab in app.js. Shape: { <lang>: { keyword|type|fn: [...] } }.
+        self.highlight = data.get("highlight", {})
 
     def href(self, stem):
         return stem + ".html"
@@ -436,6 +440,16 @@ def mermaid_block(cfg):
             '</script>') % (opt_str, tv)
 
 
+def highlight_block(cfg):
+    """A tiny <script>, injected before app.js, handing it EXTRA highlighter
+    tokens from [highlight.<lang>] — merged on top of app.js's built-in
+    keyword/type/fn lists so a site can colour its own identifiers without
+    touching the engine. Empty when [highlight] is absent."""
+    if not cfg.highlight:
+        return ""
+    return '<script>window.stillHighlight = %s;</script>\n' % json.dumps(cfg.highlight)
+
+
 def render_page(cfg, md_path):
     text = md_path.read_text(encoding="utf-8")
     meta, body = parse_front_matter(text)
@@ -466,6 +480,7 @@ def render_page(cfg, md_path):
         theme=theme_style(cfg),
         sidebar=sidebar(cfg, stem),
         article=article,
+        highlight=highlight_block(cfg),
         mermaid=mermaid_block(cfg) if uses_mermaid else "",
     )
     return cfg.href(stem), page
@@ -489,7 +504,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 
 </article></main>
 </div>
-<script src="assets/app.js"></script>{mermaid}
+{highlight}<script src="assets/app.js"></script>{mermaid}
 </body>
 </html>
 """

@@ -29,6 +29,17 @@
     var GLSL_TYPE = "float|int|bool|vec2|vec3|vec4|mat2|mat3|mat4|sampler2D";
     var GLSL_FN = "clamp|mix|sin|cos|tan|abs|min|max|pow|length|normalize|dot|cross|floor|fract|mod|sqrt|texture|texture2D|gl_Position|gl_FragColor|gl_FragCoord";
 
+    // Per-site extra tokens from site.toml [highlight.<lang>], injected as a
+    // global before this script. Shape: { cpp: { type: [...], keyword: [...] } }.
+    // words() appends them to the built-in vocab for that language + category.
+    var EXTRA = window.stillHighlight || {};
+    function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+    function words(lang, cat, base) {
+        var ex = (EXTRA[lang] && EXTRA[lang][cat]) || [];
+        var all = ex.length ? base + "|" + ex.map(escRe).join("|") : base;
+        return new RegExp("\\b(?:" + all + ")\\b");
+    }
+
     function rule(lang) {
         // Order matters: longer/greedier tokens (raw strings, strings, comments)
         // must come before words so their contents aren't re-tokenized.
@@ -37,8 +48,8 @@
                 ["com",  /\/\/[^\n]*|\/\*[\s\S]*?\*\//],
                 ["str",  /"(?:\\.|[^"\\])*"/],
                 ["num",  /#[0-9a-fA-F]{3,8}\b|@[a-z-]+|\b\d+\.?\d*(?:px|phx|ms|s|deg|%)?\b/],
-                ["kw",   new RegExp("\\b(?:" + SLINT_KW + ")\\b")],
-                ["type", new RegExp("\\b(?:" + SLINT_TYPE + ")\\b")],
+                ["kw",   words(lang, "keyword", SLINT_KW)],
+                ["type", words(lang, "type", SLINT_TYPE)],
             ];
         }
         if (lang === "glsl") {
@@ -46,9 +57,9 @@
                 ["com",  /\/\/[^\n]*|\/\*[\s\S]*?\*\//],
                 ["pre",  /#[a-zA-Z]+[^\n]*/],
                 ["num",  /\b\d+\.?\d*\b/],
-                ["fn",   new RegExp("\\b(?:" + GLSL_FN + ")\\b")],
-                ["kw",   new RegExp("\\b(?:" + GLSL_KW + ")\\b")],
-                ["type", new RegExp("\\b(?:" + GLSL_TYPE + ")\\b")],
+                ["fn",   words(lang, "fn", GLSL_FN)],
+                ["kw",   words(lang, "keyword", GLSL_KW)],
+                ["type", words(lang, "type", GLSL_TYPE)],
             ];
         }
         if (lang === "bash") {
@@ -66,8 +77,8 @@
             ["com",  /\/\/[^\n]*|\/\*[\s\S]*?\*\//],
             ["pre",  /^[ \t]*#[a-zA-Z]+/m],         // preprocessor directive
             ["num",  /\b(?:0x[0-9a-fA-F]+|\d+\.?\d*[fuUlL]*)\b/],
-            ["kw",   new RegExp("\\b(?:" + CPP_KW + ")\\b")],
-            ["type", new RegExp("\\b(?:" + CPP_TYPE + ")\\b")],
+            ["kw",   words(lang, "keyword", CPP_KW)],
+            ["type", words(lang, "type", CPP_TYPE)],
         ];
     }
 

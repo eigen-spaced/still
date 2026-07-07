@@ -47,3 +47,12 @@ pages = [
 # Optional. Injected only on pages that contain a ```mermaid block.
 [mermaid]
 theme = "dark"
+
+# --- Syntax highlighting ----------------------------------------------------
+# Optional. Add your project's own identifiers to the code highlighter, merged
+# on top of the built-in vocab per language. Categories: keyword, type, fn.
+# The <lang> key matches the code fence language (```cpp -> [highlight.cpp]).
+# [highlight.cpp]
+# type    = ["MyClass", "Widget", "RenderContext"]
+# keyword = ["co_await", "co_yield"]
+

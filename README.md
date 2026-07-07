@@ -44,16 +44,6 @@ live example and the manual. Start reading at `site/index.html`.
 | `python3 build.py --watch` | Rebuild automatically when any source changes. |
 | `python3 build.py --clean` | Remove `site/`, then build fresh. |
 
-## Layout
-
-```
-still/
-├── build.py          the engine — stdlib only, you never edit this
-├── site.toml         your site: name, nav, theme  ← the one file you edit
-├── content/*.md      your pages
-├── assets/           style.css, app.js, mermaid.min.js (vendored, offline)
-└── site/             build output — open site/index.html
-```
 
 ## Offline by design
 
