@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Markdown dialect — still</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<button class="menu-btn" aria-label="Menu">☰</button>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">
+    <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f14" stroke-width="2.2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"/></svg></span>
+    <span><span class="name">still</span><br><span class="sub">offline-first docs</span></span>
+  </a>
+  <nav class="nav-group">
+    <h4>Start here</h4>
+    <a href="index.html"><span class="num">00</span><span>What is still?</span></a>
+    <a href="writing.html"><span class="num">01</span><span>Writing pages</span></a>
+  </nav>
+  <nav class="nav-group">
+    <h4>Reference</h4>
+    <a href="dialect.html" class="active"><span class="num">02</span><span>Markdown dialect</span></a>
+    <a href="config.html"><span class="num">03</span><span>Configuration</span></a>
+    <a href="theming.html"><span class="num">04</span><span>Theming</span></a>
+  </nav>
+</aside>
+<main class="content-wrap"><article class="content">
+
+<div class="eyebrow">02 · Reference</div>
+
+<h1>The Markdown dialect</h1>
+
+<p class="lead">still supports a small, deliberate subset of Markdown plus a handful of block "containers" for the things plain Markdown can't express. This page documents every construct — and is itself written in exactly what it describes.</p>
+<h2>Headings</h2>
+<p><code>##</code> through <code>######</code> become <code>&lt;h2&gt;</code>…<code>&lt;h6&gt;</code>. (The page <code>&lt;h1&gt;</code> comes from the <code>title</code>, so you start at <code>##</code>.) Each heading is auto-assigned a URL slug, and hovering it reveals a <code>#</code> anchor link. To pin a specific anchor that other pages link to, append <code>{#my-anchor}</code>:</p>
+<figure class="code" data-lang="text" data-ref="explicit anchor"><script type="text/plain">
+## Rendering pipeline {#pipeline}
+</script></figure>
+<h2>Inline formatting</h2>
+<p>Inside any paragraph: <code>**bold**</code>, <code>*italic*</code>, `<code> </code>inline code<code> </code><code>, and </code><a href="target.html">link text</a><code>. Raw HTML entities (</code>&nbsp;<code>) and simple tags (</code><br/><code>) pass straight through; a bare </code>&amp;` is escaped for you.</p>
+<p>The result: <strong>bold</strong>, <em>italic</em>, <code>code</code>, and a <a href="index.html">link to the index</a>.</p>
+<h2>Lists</h2>
+<p>A <code>-</code> (or <code>*</code>) starts an unordered list; <code>1.</code> starts an ordered one. One level deep — no nesting.</p>
+<ul>
+  <li>first item</li>
+  <li>second item, with <code>code</code> and <strong>emphasis</strong></li>
+  <li>third</li>
+</ul>
+<ol>
+  <li>ordered</li>
+  <li>also ordered</li>
+</ol>
+<h2>Tables</h2>
+<p>GitHub-style pipe tables. A header row, a <code>---|---</code> separator, then body rows:</p>
+<figure class="code" data-lang="text" data-ref="a pipe table"><script type="text/plain">
+| Column | Meaning |
+|---|---|
+| `foo` | the first thing |
+| `bar` | the second thing |
+</script></figure>
+<p>renders as:</p>
+<table>
+  <thead><tr><th>Column</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td><code>foo</code></td><td>the first thing</td></tr>
+    <tr><td><code>bar</code></td><td>the second thing</td></tr>
+  </tbody>
+</table>
+<h2>Code figures</h2>
+<p>A fenced block ```<code> </code>`<code>lang </code>``<code> becomes a titled, syntax-highlighted figure with a copy button. Highlighting is client-side and covers </code>cpp<code>, </code>slint<code>, </code>glsl<code>, </code>bash<code>, and </code>text<code>. Add an optional </code>ref="…"<code> after the language for the little source caption on the right (a </code>·` splits its bold head from the rest):</p>
+<figure class="code" data-lang="bash" data-ref="build.py · quickstart"><script type="text/plain">
+python3 build.py            # build everything
+python3 build.py --watch    # rebuild on save
+python3 build.py index      # just one page, by stem
+</script></figure>
+<p>The code lives inside a <code>&lt;script type=&quot;text/plain&quot;&gt;</code> tag in the HTML, so you never hand-escape <code>&lt;</code>, <code>&gt;</code> or <code>&amp;</code> in your samples.</p>
+<h2>Mermaid diagrams</h2>
+<p>A ```<code> </code>`<code>mermaid </code>``<code> block renders as a diagram. Mermaid is **vendored locally** (</code>assets/mermaid.min.js`) and injected only on pages that use it, so diagrams render offline and pages without them stay lean:</p>
+<div class="mermaid">
+flowchart TD
+    A["source .md"] --> B{"a fenced block?"}
+    B -->|lang is mermaid| C["diagram div"]
+    B -->|any other lang| D["code figure"]
+    B -->|not a fence| E["paragraph / list / …"]
+</div>
+<div class="note">
+  <span class="label">No flash</span>
+  <p>The raw diagram source is hidden until Mermaid swaps in the finished SVG, so the page never flickers the <code>flowchart …</code> text on load.</p>
+</div>
+<h2>Callouts</h2>
+<p>Four coloured callouts. Write <code>:::name Optional Title</code>, the body, then a closing <code>:::</code>. The body is full Markdown.</p>
+<div class="note">
+  <span class="label">A note</span>
+  <p><code>:::note</code> — blue. For asides and clarifications.</p>
+</div>
+<div class="key">
+  <span class="label">A key point</span>
+  <p><code>:::key</code> — teal. For the thing you most want remembered.</p>
+</div>
+<div class="warn">
+  <span class="label">A warning</span>
+  <p><code>:::warn</code> — amber. For caveats and sharp edges.</p>
+</div>
+<div class="gotcha">
+  <span class="label">A gotcha</span>
+  <p><code>:::gotcha</code> — red. For the mistake everyone makes once.</p>
+</div>
+<h2>The lead paragraph</h2>
+<p><code>:::lead … :::</code> renders the larger, dimmer intro paragraph at the top of a page (this page opened with one). Use exactly one, right after the title.</p>
+<h2>Cards</h2>
+<p><code>:::cards</code> makes a navigation grid. Each line is <code>- [Title](href) | kicker | description</code>:</p>
+<div class="cards">
+  <a class="card" href="config.html">
+    <div class="k">reference</div>
+    <h3>Configuration</h3>
+    <p>The full <code>site.toml</code> schema.</p>
+  </a>
+  <a class="card" href="theming.html">
+    <div class="k">reference</div>
+    <h3>Theming</h3>
+    <p>Recolour everything from a few tokens.</p>
+  </a>
+</div>
+<h2>Steps</h2>
+<p><code>:::steps</code> makes a numbered how-to. Each line is <code>- Heading | body paragraph</code>:</p>
+<ol class="steps">
+  <li>
+    <h4>Write</h4>
+    <p>Create a Markdown file under <code>content/</code>.</p>
+  </li>
+  <li>
+    <h4>Register</h4>
+    <p>Add one line to <code>site.toml</code>.</p>
+  </li>
+  <li>
+    <h4>Build</h4>
+    <p>Run <code>python3 build.py</code> and open the result.</p>
+  </li>
+</ol>
+<h2>Legend</h2>
+<p><code>:::legend</code> makes a row of colour-dot chips. Each line is <code>- key: text</code>, where <code>key</code> selects the dot colour (<code>audio</code>, <code>ui</code>, <code>gpu</code>):</p>
+<div class="legend">
+  <span class="chip"><span class="dot ui"></span> teal dot — one meaning</span>
+  <span class="chip"><span class="dot audio"></span> amber dot — another</span>
+  <span class="chip"><span class="dot gpu"></span> purple dot — a third</span>
+</div>
+<h2>ASCII diagrams</h2>
+<p><code>:::diagram</code> keeps its inner lines <strong>verbatim</strong> — whitespace preserved, raw HTML allowed (handy for hand-drawn box diagrams with coloured <code>&lt;span&gt;</code>s):</p>
+<div class="diagram"><pre>  content/*.md ──▶ build.py ──▶ site/*.html
+                     ▲
+                 site.toml</pre></div>
+<p>That is the entire dialect. If you need something it can't express, the source in <code>build.py</code> is short enough to extend in an afternoon.</p>
+
+<div class="pager">
+  <a href="writing.html"><div class="dir">← Previous</div><div class="ttl">Writing pages</div></a>
+  <a class="next" href="config.html"><div class="dir">Next →</div><div class="ttl">Configuration</div></a>
+</div>
+
+</article></main>
+</div>
+<script src="assets/app.js"></script>
+<script src="assets/mermaid.min.js"></script>
+<script>
+  if (window.mermaid) mermaid.initialize({ startOnLoad: true, securityLevel: "loose", theme: "dark", themeVariables: { fontFamily: "inherit", primaryColor: "#1c1c26", primaryBorderColor: "#34343f", lineColor: "#6e6e80", primaryTextColor: "#d7d7e0" } });
+</script>
+</body>
+</html>

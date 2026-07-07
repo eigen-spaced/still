@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Writing pages — still</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<button class="menu-btn" aria-label="Menu">☰</button>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">
+    <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f14" stroke-width="2.2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"/></svg></span>
+    <span><span class="name">still</span><br><span class="sub">offline-first docs</span></span>
+  </a>
+  <nav class="nav-group">
+    <h4>Start here</h4>
+    <a href="index.html"><span class="num">00</span><span>What is still?</span></a>
+    <a href="writing.html" class="active"><span class="num">01</span><span>Writing pages</span></a>
+  </nav>
+  <nav class="nav-group">
+    <h4>Reference</h4>
+    <a href="dialect.html"><span class="num">02</span><span>Markdown dialect</span></a>
+    <a href="config.html"><span class="num">03</span><span>Configuration</span></a>
+    <a href="theming.html"><span class="num">04</span><span>Theming</span></a>
+  </nav>
+</aside>
+<main class="content-wrap"><article class="content">
+
+<div class="eyebrow">01 · Start here</div>
+
+<h1>Writing pages</h1>
+
+<p class="lead">The daily loop is: create a Markdown file, add one line to <code>site.toml</code>, rebuild. This page covers that loop end to end.</p>
+<h2>Adding a page</h2>
+<ol class="steps">
+  <li>
+    <h4>Create the Markdown</h4>
+    <p>Add <code>content/my-page.md</code>. The filename without <code>.md</code> is its <em>stem</em> — here, <code>my-page</code>. That stem is how everything refers to the page.</p>
+  </li>
+  <li>
+    <h4>Register it in the nav</h4>
+    <p>Open <code>site.toml</code> and add <code>[&quot;my-page&quot;, &quot;05&quot;, &quot;My Page&quot;]</code> to the <code>pages</code> list of whichever <code>[[nav]]</code> group it belongs in. The three fields are stem, number, sidebar label.</p>
+  </li>
+  <li>
+    <h4>Rebuild</h4>
+    <p>Run <code>python3 build.py</code>. Your page appears at <code>site/my-page.html</code>, in the sidebar, with prev/next links wired automatically.</p>
+  </li>
+</ol>
+<p>That is the whole process. The nav order in <code>site.toml</code> <em>is</em> the sidebar order and the prev/next order — there is no second place to keep them in sync.</p>
+<div class="note">
+  <span class="label">Live rebuilds</span>
+  <p>While writing, run <code>python3 build.py --watch</code>. It rebuilds the instant you save any file (including <code>site.toml</code>), so you just refresh the browser tab. Still no server — you are refreshing a <code>file://</code> URL.</p>
+</div>
+<h2>Front matter</h2>
+<p>Each page <em>may</em> start with a front-matter block between <code>---</code> lines. Every field is optional — a page with no front matter at all is fine.</p>
+<figure class="code" data-lang="text" data-ref="content/my-page.md · top of file"><script type="text/plain">
+---
+title: My Page
+eyebrow: 05 · reference
+head_title: My Page — my project
+---
+</script></figure>
+<table>
+  <thead><tr><th>Field</th><th>Purpose</th><th>Default</th></tr></thead>
+  <tbody>
+    <tr><td><code>title</code></td><td>The <code>&lt;h1&gt;</code> at the top of the page</td><td>the nav label, then the file stem</td></tr>
+    <tr><td><code>eyebrow</code></td><td>The small kicker above the <code>&lt;h1&gt;</code></td><td><code>&quot;&lt;number&gt; · &lt;group&gt;&quot;</code> from the nav</td></tr>
+    <tr><td><code>head_title</code></td><td>The browser-tab <code>&lt;title&gt;</code></td><td><code>&quot;&lt;title&gt; — &lt;title_suffix&gt;&quot;</code></td></tr>
+  </tbody>
+</table>
+<p>Because <code>eyebrow</code> and <code>title</code> both fall back to the nav, most pages need <strong>no front matter at all</strong> — the one you are reading only sets <code>title</code> because it differs from its short sidebar label.</p>
+<h2>A minimal page</h2>
+<p>Here is a complete, valid page. Everything after the front matter is the <a href="dialect.html">Markdown dialect</a>:</p>
+<figure class="code" data-lang="text" data-ref="content/example.md"><script type="text/plain">
+---
+title: Example
+---
+
+:::lead
+A one-line summary that renders larger and dimmer — the page's hook.
+:::
+
+## A section
+
+Plain paragraphs, **bold**, *italic*, `inline code`, and
+[links](other-page.html) all work as you would expect.
+
+- a list item
+- another one
+</script></figure>
+<h2>Linking between pages</h2>
+<p>Link to another page by its <strong>output filename</strong> — the stem plus <code>.html</code>:</p>
+<figure class="code" data-lang="text" data-ref="inline link"><script type="text/plain">
+See the [configuration reference](config.html) for the full schema.
+</script></figure>
+<p>Since every page lives in the same output folder, these are plain relative links — which is exactly why they keep working over <code>file://</code>.</p>
+<div class="gotcha">
+  <span class="label">Link to the .html, not the .md</span>
+  <p>Links point at the <em>built</em> file (<code>config.html</code>), not the source (<code>config.md</code>). The <code>.md</code> files never ship — only the rendered <code>site/</code> folder does.</p>
+</div>
+
+<div class="pager">
+  <a href="index.html"><div class="dir">← Previous</div><div class="ttl">What is still?</div></a>
+  <a class="next" href="dialect.html"><div class="dir">Next →</div><div class="ttl">Markdown dialect</div></a>
+</div>
+
+</article></main>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

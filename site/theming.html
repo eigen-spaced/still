@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Theming — still</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<button class="menu-btn" aria-label="Menu">☰</button>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">
+    <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f14" stroke-width="2.2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"/></svg></span>
+    <span><span class="name">still</span><br><span class="sub">offline-first docs</span></span>
+  </a>
+  <nav class="nav-group">
+    <h4>Start here</h4>
+    <a href="index.html"><span class="num">00</span><span>What is still?</span></a>
+    <a href="writing.html"><span class="num">01</span><span>Writing pages</span></a>
+  </nav>
+  <nav class="nav-group">
+    <h4>Reference</h4>
+    <a href="dialect.html"><span class="num">02</span><span>Markdown dialect</span></a>
+    <a href="config.html"><span class="num">03</span><span>Configuration</span></a>
+    <a href="theming.html" class="active"><span class="num">04</span><span>Theming</span></a>
+  </nav>
+</aside>
+<main class="content-wrap"><article class="content">
+
+<div class="eyebrow">04 · Reference</div>
+
+<h1>Theming</h1>
+
+<p class="lead">The entire look is driven by CSS custom properties. Override any of them from a <code>[theme]</code> block in <code>site.toml</code> — no stylesheet editing, no engine changes.</p>
+<h2>How it works</h2>
+<p><code>assets/style.css</code> defines every colour and key dimension as a <code>--token</code> in its <code>:root</code>. At build time, each key in your <code>[theme]</code> block is emitted as a <code>--key: value</code> override injected into every page's <code>&lt;head&gt;</code>, <em>after</em> the stylesheet — so it wins by the cascade.</p>
+<figure class="code" data-lang="toml" data-ref="site.toml"><script type="text/plain">
+[theme]
+teal = "#7c9cff"
+bg   = "#0b0b10"
+</script></figure>
+<p>That is the whole mechanism: a <code>[theme]</code> key named <code>foo</code> sets <code>--foo</code>. If a token exists in the stylesheet, you can override it.</p>
+<h2>The accent</h2>
+<p>The single most impactful token is <code>--teal</code> — the accent used for links, the active sidebar item, code-language chips, the eyebrow, and focus rings. Change just that one and the whole site re-tints:</p>
+<figure class="code" data-lang="toml" data-ref="a one-line rebrand"><script type="text/plain">
+[theme]
+teal = "#f0975a"
+</script></figure>
+<h2>Token reference</h2>
+<p>The colour tokens, grouped by role:</p>
+<table>
+  <thead><tr><th>Token</th><th>Role</th></tr></thead>
+  <tbody>
+    <tr><td><code>bg</code></td><td>page background</td></tr>
+    <tr><td><code>bg-panel</code></td><td>sidebar, cards, callout backgrounds</td></tr>
+    <tr><td><code>bg-code</code></td><td>code-figure background</td></tr>
+    <tr><td><code>bg-inset</code></td><td>inline-code / nav-hover background</td></tr>
+    <tr><td><code>border</code>, <code>border-2</code></td><td>hairlines and stronger borders</td></tr>
+    <tr><td><code>text</code></td><td>body text</td></tr>
+    <tr><td><code>text-dim</code></td><td>secondary text</td></tr>
+    <tr><td><code>text-mute</code></td><td>captions, numbers, muted labels</td></tr>
+    <tr><td><code>teal</code>, <code>teal-dim</code></td><td><strong>the accent</strong> and its darker shade</td></tr>
+    <tr><td><code>purple</code>, <code>pink</code>, <code>blue</code>, <code>orange</code>, <code>yellow</code>, <code>red</code>, <code>green</code></td><td>syntax + callout accents</td></tr>
+  </tbody>
+</table>
+<p>And the two layout dimensions:</p>
+<table>
+  <thead><tr><th>Token</th><th>Role</th><th>Default</th></tr></thead>
+  <tbody>
+    <tr><td><code>sidebar-w</code></td><td>sidebar width</td><td><code>290px</code></td></tr>
+    <tr><td><code>content-w</code></td><td>max article width</td><td><code>860px</code></td></tr>
+  </tbody>
+</table>
+<div class="note">
+  <span class="label">Syntax colours travel with the palette</span>
+  <p>The code-highlighting token classes (<code>.t-kw</code>, <code>.t-str</code>, …) reference the palette tokens above, so re-theming <code>--pink</code> or <code>--green</code> also recolours syntax highlighting — no separate theme to maintain.</p>
+</div>
+<h2>A worked example: a light-ish theme</h2>
+<figure class="code" data-lang="toml" data-ref="site.toml · a warmer, lighter accent"><script type="text/plain">
+[theme]
+teal      = "#2f9e7f"
+bg        = "#0d0f12"
+bg-panel  = "#15181d"
+text      = "#e2e6ea"
+
+[mermaid]
+theme = "neutral"
+</script></figure>
+<div class="gotcha">
+  <span class="label">Keep Mermaid in step</span>
+  <p><code>[theme]</code> only restyles the HTML/CSS. Mermaid diagrams are drawn by Mermaid's own theme, so if you move far from the default palette, set a matching <code>[mermaid] theme</code> (<code>dark</code>, <code>neutral</code>, <code>forest</code>, <code>default</code>) too — otherwise the diagrams will look out of place against your new colours.</p>
+</div>
+
+<div class="pager">
+  <a href="config.html"><div class="dir">← Previous</div><div class="ttl">Configuration</div></a>
+</div>
+
+</article></main>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

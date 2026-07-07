@@ -1,0 +1,49 @@
+# still — site configuration.
+#
+# This is the ONE file you edit to make these docs your own. build.py never
+# needs changing. Adding a page = drop a content/<stem>.md, add a line under
+# the right [[nav]] group below.
+
+[site]
+name    = "still"
+tagline = "offline-first docs"
+# <title> tag = "<page title> — <title_suffix>". Defaults to `name`.
+title_suffix = "still"
+# Build output folder (relative to build.py). Open <output>/index.html.
+output  = "site"
+# Optional brand mark: a path to an .svg whose inner markup replaces the
+# built-in doc-lines logo. Omit to keep the default.
+# logo  = "assets/logo.svg"
+
+# --- Navigation -------------------------------------------------------------
+# Each [[nav]] is a sidebar group. `pages` is an ordered list of
+#   [ "<content stem>", "<number>", "<sidebar label>" ]
+# The stem maps to content/<stem>.md. The number shows in the sidebar and as
+# the page's eyebrow. This order IS the sidebar order and the prev/next order.
+
+[[nav]]
+title = "Start here"
+pages = [
+  ["index",   "00", "What is still?"],
+  ["writing", "01", "Writing pages"],
+]
+
+[[nav]]
+title = "Reference"
+pages = [
+  ["dialect", "02", "Markdown dialect"],
+  ["config",  "03", "Configuration"],
+  ["theming", "04", "Theming"],
+]
+
+# --- Theme ------------------------------------------------------------------
+# Optional. Any key here overrides the matching --key CSS custom property in
+# assets/style.css. Delete the whole block to keep the stock dark theme.
+# [theme]
+# teal = "#7c9cff"   # the accent (links, active nav, code lang chip)
+# bg   = "#0b0b10"   # page background
+
+# --- Mermaid ----------------------------------------------------------------
+# Optional. Injected only on pages that contain a ```mermaid block.
+[mermaid]
+theme = "dark"

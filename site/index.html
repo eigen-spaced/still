@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>still — offline-first docs</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<button class="menu-btn" aria-label="Menu">☰</button>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">
+    <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f14" stroke-width="2.2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"/></svg></span>
+    <span><span class="name">still</span><br><span class="sub">offline-first docs</span></span>
+  </a>
+  <nav class="nav-group">
+    <h4>Start here</h4>
+    <a href="index.html" class="active"><span class="num">00</span><span>What is still?</span></a>
+    <a href="writing.html"><span class="num">01</span><span>Writing pages</span></a>
+  </nav>
+  <nav class="nav-group">
+    <h4>Reference</h4>
+    <a href="dialect.html"><span class="num">02</span><span>Markdown dialect</span></a>
+    <a href="config.html"><span class="num">03</span><span>Configuration</span></a>
+    <a href="theming.html"><span class="num">04</span><span>Theming</span></a>
+  </nav>
+</aside>
+<main class="content-wrap"><article class="content">
+
+<div class="eyebrow">00 · Start here</div>
+
+<h1>What is still?</h1>
+
+<p class="lead"><strong>still</strong> is a tiny static documentation generator. You write Markdown, run one Python script with no dependencies, and get a folder of HTML you open by double-clicking. No server, no <code>npm install</code>, no build toolchain — and it works offline, over <code>file://</code>, forever.</p>
+<p>It was extracted from a real project's engineering docs, where the whole point was being able to <em>read the docs while offline on a plane</em> without spinning up a local server first. That constraint shapes every design decision here.</p>
+<h2>Why it exists</h2>
+<p>Most "modern" doc tools quietly assume a server. The moment you open their output as a local file, something breaks — because the browser blocks the very things they rely on:</p>
+<table>
+  <thead><tr><th>Approach</th><th>Breaks over <code>file://</code> because…</th></tr></thead>
+  <tbody>
+    <tr><td>Render Markdown in the browser (docsify-style)</td><td><code>fetch()</code> of local <code>.md</code> is blocked by CORS</td></tr>
+    <tr><td>ES-module JavaScript</td><td>modules are blocked over <code>file://</code> in Chrome</td></tr>
+    <tr><td>Service-worker "offline" PWA</td><td>service workers need a secure context (https)</td></tr>
+    <tr><td>Single-page-app routing</td><td>needs a server to rewrite URLs</td></tr>
+  </tbody>
+</table>
+<p>still sidesteps all of it by <strong>pre-rendering everything to plain HTML</strong> at build time, linking pages with ordinary relative links, and shipping a single classic <code>&lt;script&gt;</code> for the interactive bits. That is the <em>only</em> stack that survives a double-click.</p>
+<div class="key">
+  <span class="label">The one promise</span>
+  <p>Clone the repo, run <code>python3 build.py</code>, open <code>site/index.html</code>. That is the entire workflow, and it never needs a network again.</p>
+</div>
+<h2>What you get</h2>
+<div class="cards">
+  <a class="card" href="writing.html">
+    <div class="k">01 · start here</div>
+    <h3>Writing pages</h3>
+    <p>Front matter, adding a page, the nav — the day-to-day loop.</p>
+  </a>
+  <a class="card" href="dialect.html">
+    <div class="k">02 · reference</div>
+    <h3>Markdown dialect</h3>
+    <p>Every block and inline construct, with live examples.</p>
+  </a>
+  <a class="card" href="config.html">
+    <div class="k">03 · reference</div>
+    <h3>Configuration</h3>
+    <p>The <code>site.toml</code> schema — name, nav, output, theme.</p>
+  </a>
+  <a class="card" href="theming.html">
+    <div class="k">04 · reference</div>
+    <h3>Theming</h3>
+    <p>Recolour the whole site from a handful of tokens.</p>
+  </a>
+</div>
+<h2>How a build flows</h2>
+<p>Everything runs at build time. The browser only ever sees finished HTML:</p>
+<div class="mermaid">
+flowchart LR
+    MD["content/*.md"] --> B["build.py<br/>(stdlib only)"]
+    CFG["site.toml"] --> B
+    A["assets/<br/>css · js · mermaid"] --> B
+    B --> OUT["site/*.html<br/>+ site/assets/"]
+    OUT --> V["open in a browser<br/>(file://, offline)"]
+</div>
+<p>The <code>assets/</code> folder is copied into the output verbatim, so the <code>site/</code> folder is fully self-contained — zip it, email it, drop it on any static host, and it just works.</p>
+<h2>Requirements</h2>
+<div class="legend">
+  <span class="chip"><span class="dot ui"></span> Python 3.11+ (for the stdlib <code>tomllib</code> TOML parser)</span>
+  <span class="chip"><span class="dot gpu"></span> a web browser — any modern one</span>
+  <span class="chip"><span class="dot audio"></span> nothing else. No pip installs, ever.</span>
+</div>
+<p>That is the whole dependency list. The engine is a single ~450-line <code>build.py</code>; if you can read it, you can change it.</p>
+
+<div class="pager">
+  <a class="next" href="writing.html"><div class="dir">Next →</div><div class="ttl">Writing pages</div></a>
+</div>
+
+</article></main>
+</div>
+<script src="assets/app.js"></script>
+<script src="assets/mermaid.min.js"></script>
+<script>
+  if (window.mermaid) mermaid.initialize({ startOnLoad: true, securityLevel: "loose", theme: "dark", themeVariables: { fontFamily: "inherit", primaryColor: "#1c1c26", primaryBorderColor: "#34343f", lineColor: "#6e6e80", primaryTextColor: "#d7d7e0" } });
+</script>
+</body>
+</html>

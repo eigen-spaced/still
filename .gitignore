@@ -1,0 +1,17 @@
+# OS / editor cruft
+.DS_Store
+*.swp
+
+# Python
+__pycache__/
+*.pyc
+
+# Build output.
+#
+# `site/` is COMMITTED by default so the repo is browsable the instant you clone
+# it — open site/index.html, no build, no Python, no server. That is the whole
+# offline-first promise, so it ships built.
+#
+# If you would rather keep generated HTML out of git (regenerate with
+# `python3 build.py`), uncomment the next line:
+# site/

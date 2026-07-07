@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configuration — still</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<button class="menu-btn" aria-label="Menu">☰</button>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">
+    <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0f0f14" stroke-width="2.2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"/></svg></span>
+    <span><span class="name">still</span><br><span class="sub">offline-first docs</span></span>
+  </a>
+  <nav class="nav-group">
+    <h4>Start here</h4>
+    <a href="index.html"><span class="num">00</span><span>What is still?</span></a>
+    <a href="writing.html"><span class="num">01</span><span>Writing pages</span></a>
+  </nav>
+  <nav class="nav-group">
+    <h4>Reference</h4>
+    <a href="dialect.html"><span class="num">02</span><span>Markdown dialect</span></a>
+    <a href="config.html" class="active"><span class="num">03</span><span>Configuration</span></a>
+    <a href="theming.html"><span class="num">04</span><span>Theming</span></a>
+  </nav>
+</aside>
+<main class="content-wrap"><article class="content">
+
+<div class="eyebrow">03 · Reference</div>
+
+<h1>Configuration</h1>
+
+<p class="lead">Everything site-specific lives in <code>site.toml</code>. The engine (<code>build.py</code>) reads it and never needs editing. This is the complete schema.</p>
+<h2><code>[site]</code></h2>
+<p>Top-level identity and output settings.</p>
+<table>
+  <thead><tr><th>Key</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td><code>name</code></td><td>string</td><td><code>&quot;docs&quot;</code></td><td>Site name — shown in the sidebar brand.</td></tr>
+    <tr><td><code>tagline</code></td><td>string</td><td><code>&quot;&quot;</code></td><td>Small text under the name in the sidebar.</td></tr>
+    <tr><td><code>title_suffix</code></td><td>string</td><td><code>name</code></td><td>Appended to each page's browser-tab title.</td></tr>
+    <tr><td><code>output</code></td><td>string</td><td><code>&quot;site&quot;</code></td><td>Build output folder, relative to <code>build.py</code>.</td></tr>
+    <tr><td><code>logo</code></td><td>string</td><td><em>(built-in)</em></td><td>Path to an <code>.svg</code> whose markup replaces the default brand mark.</td></tr>
+  </tbody>
+</table>
+<figure class="code" data-lang="toml" data-ref="site.toml · [site]"><script type="text/plain">
+[site]
+name    = "my project"
+tagline = "internal docs"
+output  = "site"
+</script></figure>
+<h2><code>[[nav]]</code></h2>
+<p>An <strong>ordered list</strong> of sidebar groups — note the double brackets, which is TOML for "array of tables". Each group has a <code>title</code> and a <code>pages</code> list. Every page is a three-element array: <code>[&quot;&lt;stem&gt;&quot;, &quot;&lt;number&gt;&quot;, &quot;&lt;label&gt;&quot;]</code>.</p>
+<figure class="code" data-lang="toml" data-ref="site.toml · navigation"><script type="text/plain">
+[[nav]]
+title = "Start here"
+pages = [
+  ["index",   "00", "Overview"],
+  ["install", "01", "Installation"],
+]
+
+[[nav]]
+title = "Guides"
+pages = [
+  ["config",  "02", "Configuration"],
+]
+</script></figure>
+<table>
+  <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td>stem</td><td>Maps to <code>content/&lt;stem&gt;.md</code> and outputs <code>&lt;stem&gt;.html</code>.</td></tr>
+    <tr><td>number</td><td>Shown in the sidebar and as the page eyebrow.</td></tr>
+    <tr><td>label</td><td>The sidebar text and default page title.</td></tr>
+  </tbody>
+</table>
+<p>The order here is the single source of truth: it drives the sidebar order, the eyebrow numbers, and the automatic prev/next pager.</p>
+<div class="note">
+  <span class="label">Missing files are flagged</span>
+  <p>If <code>[[nav]]</code> lists a stem with no matching <code>content/&lt;stem&gt;.md</code>, the build prints a warning rather than failing — so you can stub out the nav before writing every page.</p>
+</div>
+<h2><code>[theme]</code></h2>
+<p>Optional. Every key overrides the matching <code>--key</code> CSS custom property in <code>assets/style.css</code>. Omit the whole block for the stock dark theme. See <a href="theming.html">Theming</a> for the full token list.</p>
+<figure class="code" data-lang="toml" data-ref="site.toml · [theme]"><script type="text/plain">
+[theme]
+teal = "#7c9cff"   # the accent colour
+bg   = "#0b0b10"   # page background
+</script></figure>
+<h2><code>[mermaid]</code></h2>
+<p>Optional. Only relevant if a page contains a <code> </code>`<code>mermaid </code> block.</p>
+<table>
+  <thead><tr><th>Key</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td><code>theme</code></td><td>string</td><td><code>&quot;dark&quot;</code></td><td>Mermaid's built-in theme name.</td></tr>
+    <tr><td><code>theme_variables</code></td><td>table</td><td><em>(dark preset)</em></td><td>Fine-grained Mermaid colour overrides.</td></tr>
+  </tbody>
+</table>
+<figure class="code" data-lang="toml" data-ref="site.toml · [mermaid]"><script type="text/plain">
+[mermaid]
+theme = "dark"
+</script></figure>
+<h2>A complete example</h2>
+<figure class="code" data-lang="toml" data-ref="site.toml"><script type="text/plain">
+[site]
+name    = "acme"
+tagline = "engineering docs"
+output  = "site"
+
+[[nav]]
+title = "Start here"
+pages = [
+  ["index", "00", "Overview"],
+]
+
+[mermaid]
+theme = "dark"
+</script></figure>
+
+<div class="pager">
+  <a href="dialect.html"><div class="dir">← Previous</div><div class="ttl">Markdown dialect</div></a>
+  <a class="next" href="theming.html"><div class="dir">Next →</div><div class="ttl">Theming</div></a>
+</div>
+
+</article></main>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>
