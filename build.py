@@ -504,6 +504,8 @@ def copy_assets(cfg):
     if not ASSETS.is_dir():
         return
     dst = cfg.output / "assets"
+    if dst.resolve() == ASSETS.resolve():
+        return  # building in place (output = "."): assets are already colocated
     shutil.copytree(ASSETS, dst, dirs_exist_ok=True)
 
 
